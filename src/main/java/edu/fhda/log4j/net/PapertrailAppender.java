@@ -47,8 +47,8 @@ public class PapertrailAppender extends AppenderSkeleton {
     /**
      * Create a new PapertrailAppender instance with a configurable name, host, port, and layout.
      * @param name The name to use for the appender
-     * @param hostname The remote hostname for connecting remotely to Papertrail
-     * @param port The remote port to use for connecting remotely to Papertrail
+     * @param hostname The remote hostname for connecting to Papertrail
+     * @param port The remote port to use for connecting to Papertrail
      * @param layout A Layout instance for formatting log messages
      */
     public PapertrailAppender(String name, String hostname, int port, Layout layout) {
@@ -71,40 +71,40 @@ public class PapertrailAppender extends AppenderSkeleton {
             workerService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        // Begin an infinite loop to process log messages
-                        while(true) {
-                            // Block and wait for log message(s) to be queued
-                            String nextWaitingMessage = logMessageQueue.take();
+                try {
+                    // Begin an infinite loop to process log messages
+                    while(true) {
+                        // Block and wait for log message(s) to be queued
+                        String nextWaitingMessage = logMessageQueue.take();
 
-                            // Create a secure socket to Papertrail
-                            SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(papertrailHost, papertrailPort);
-                            sslSocket.startHandshake();
+                        // Create a secure socket to Papertrail
+                        SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(papertrailHost, papertrailPort);
+                        sslSocket.startHandshake();
+
+                        // Write log message
+                        BufferedWriter socketOut = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
+                        socketOut.write(truncateMessage(nextWaitingMessage));
+
+                        // Nested loop to check for additional waiting messages (connection reuse)
+                        while(logMessageQueue.peek() != null) {
+                            // Get the next available log message
+                            nextWaitingMessage = logMessageQueue.take();
 
                             // Write log message
-                            BufferedWriter socketOut = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
                             socketOut.write(truncateMessage(nextWaitingMessage));
-
-                            // Nested loop to check for additional waiting messages (connection reuse)
-                            while(logMessageQueue.peek() != null) {
-                                // Get the next available log message
-                                nextWaitingMessage = logMessageQueue.take();
-
-                                // Write log message
-                                socketOut.write(truncateMessage(nextWaitingMessage));
-                            }
-
-                            // Clean up stream and socket
-                            socketOut.flush();
-                            socketOut.close();
-                            sslSocket.close();
                         }
+
+                        // Clean up stream and socket
+                        socketOut.flush();
+                        socketOut.close();
+                        sslSocket.close();
                     }
-                    catch(Exception workerError) {
-                        // Logging should be fast and error-free. Getting an exception thrown is really bad.
-                        // Make a loud noise so the error is visible and diagnosable.
-                        workerError.printStackTrace(System.out);
-                    }
+                }
+                catch(Exception workerError) {
+                    // Logging should be fast and error-free. Getting an exception thrown is really bad.
+                    // Make a loud noise so the error is visible and diagnosable.
+                    workerError.printStackTrace(System.out);
+                }
                 }
             });
 
