@@ -1,9 +1,9 @@
 # Introduction
 Papertrail (<http://papertrailapp.com>) is a very cool cloud service I have been experimenting with lately to unify logging from my Java applications. In my circumstances, dealing with configuration and behavioral differences that pop up when desiring to use Log4j with Tomcat and Weblogic 11g simultaneously is a time drain.
 
-I ran into one issue when configuring Log4j to use Papertrail: using UDP as the default for the syslog protocol. I created the Papertrail Appender for Log4j as an alternative to deal with network polices that prevented me from using the packaged SyslogAppender already included with Log4j.
+I ran into one issue when configuring Log4j to use Papertrail: using UDP as the default for the syslog protocol. I created the Papertrail Appender for Log4j as an alternative to deal with network polices that prevented me from using the packaged SyslogAppender already included with Log4j. Another bonus is the use of SSL TLS for secure transmission of logging data.
 
-It is a very simple appender, relies exclusively on the Java SE classes, easy to configure, and intentionally does not have many bells-and-whistles. The most important aspect is the use of concurrency so that Log4j is not held back by a slower network, and this also allows the connection to be reused if multiple log messages are pending.
+It is a very simple appender, relies exclusively on Java SE classes, easy to configure, and intentionally does not have many bells-and-whistles. The most important aspect is the use of concurrency so that Log4j is not held back by a slower network connection, and this also allows the connection to be reused if multiple log messages are pending.
 
 # Installation
 
@@ -31,7 +31,7 @@ Optionally, you can clone this repo to your disk, and run "mvn clean compile pac
 
 ## Step 3: Configure Log4j
 
-#### Log4j XML Examile
+#### Log4j XML Example
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
