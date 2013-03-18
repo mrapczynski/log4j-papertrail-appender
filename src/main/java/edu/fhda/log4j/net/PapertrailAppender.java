@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * blocked.
  *
  * @author Matt Rapczynski, Foothill-De Anza College District
- * @verson 1.0
+ * @version 1.0
  */
 public class PapertrailAppender extends AppenderSkeleton {
 
