@@ -25,7 +25,13 @@ Modify as you need to make the import work for your environment.
 
 The best option is to use Maven.
 
-**3/18/13 Repository Information Pending Approval**
+```xml
+<dependency>
+  <groupId>edu.fhda</groupId>
+  <artifactId>log4j-papertrail-appender</artifactId>
+  <version>1.0</version>
+</dependency>
+```
 
 Optionally, you can clone this repo to your disk, and run "mvn clean compile package" to generate a JAR file that you can include in your classpath
 
