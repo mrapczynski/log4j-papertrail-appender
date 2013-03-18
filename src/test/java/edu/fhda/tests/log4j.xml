@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="papertrail" class="edu.fhda.log4j.net.PapertrailAppender">
+        <param name="papertrailHost" value="YOUR_PAPERTRAIL_HOST" />
+        <param name="papertrailPort" value="YOUR_PAPERTRAIL_PORT" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{MMM dd HH:mm:ss} your-host your-app: %d{hh:mm aa} [%c] [%t] %m %n" />
+        </layout>
+    </appender>
+
+    <root>
+        <priority value ="info" />
+        <appender-ref ref="papertrail" />
+    </root>
+
+</log4j:configuration>
